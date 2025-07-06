@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(SDL2-2.30.0)
 add_subdirectory(SDL2_image-2.8.0)
-add_subdirectory(libpng)
 
 add_executable(zvp main.cpp)
 
