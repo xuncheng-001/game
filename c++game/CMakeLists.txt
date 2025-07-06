@@ -12,12 +12,10 @@ add_executable(zvp main.cpp)
 target_link_libraries(zvp PRIVATE
         SDL2::SDL2
         SDL2_image::SDL2_image
-        png
 )
 
 target_include_directories(zvp PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/SDL2-2.30.0/include
         ${CMAKE_CURRENT_SOURCE_DIR}/SDL2_image-2.8.0/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/libpng
 )
 

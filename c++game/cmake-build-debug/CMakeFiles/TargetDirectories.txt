@@ -8,6 +8,7 @@
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/sdl_headers_copy.dir
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/SDL2main.dir
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/SDL2.dir
+/home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/SDL2-static.dir
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/SDL2_test.dir
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/uninstall.dir
 /home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/CMakeFiles/edit_cache.dir

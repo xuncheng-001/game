@@ -10,14 +10,13 @@ class Button {
     //接受图片路径，位置，大小
     Button(SDL_Renderer *renderer,const char* imagePath, int x, int y, int w, int h)
     {
+        //加载图片,设置按钮的位置和大小
+        texture = IMG_LoadTexture(renderer, imagePath);
         if (!texture)
         {
             std::cerr << "Failed to load button image" << std::endl;
             return;
         }
-
-        //加载图片,设置按钮的位置和大小
-        texture = IMG_LoadTexture(renderer, imagePath);
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -98,6 +97,8 @@ int main(int argc, char *argv[])
         SDL_RenderCopy(renderer, background, nullptr, nullptr);
 
         button.render(renderer);
+
+        //更新渲染器
         SDL_RenderPresent(renderer);
     }
 

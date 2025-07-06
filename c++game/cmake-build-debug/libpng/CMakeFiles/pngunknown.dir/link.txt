@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/pngunknown.dir/contrib/libtests/pngunknown.c.o -o pngunknown  -Wl,-rpath,/home/xuncheng/game/c++game/cmake-build-debug/libpng libpng16d.so.16.51.git /usr/lib/x86_64-linux-gnu/libz.so -lm

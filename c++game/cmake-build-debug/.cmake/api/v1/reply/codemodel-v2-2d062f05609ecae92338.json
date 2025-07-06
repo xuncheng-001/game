@@ -1,0 +1,311 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.30"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						18
+					]
+				},
+				{
+					"build" : "SDL2-2.30.0",
+					"jsonFile" : "directory-SDL2-2.30.0-Debug-60f324d0f9c56d57195e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "SDL2-2.30.0",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						3,
+						4,
+						16,
+						17
+					]
+				},
+				{
+					"build" : "SDL2_image-2.8.0",
+					"jsonFile" : "directory-SDL2_image-2.8.0-Debug-6a372b263169b4d37c8d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "SDL2_image-2.8.0",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "libpng",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-libpng-Debug-c244f4522fdd1cddcce5.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.14"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "libpng",
+					"targetIndexes" : 
+					[
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "zvp",
+					"targetIndexes" : 
+					[
+						18
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "SDL2",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						3,
+						4,
+						16,
+						17
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "SDL2_image",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3
+					],
+					"name" : "libpng",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2-Debug-7c26794943794141ce1c.json",
+					"name" : "SDL2",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2-static::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2-static-Debug-641ba8839fa3153e02f7.json",
+					"name" : "SDL2-static",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2_image::@fea366d737a481bc7f35",
+					"jsonFile" : "target-SDL2_image-Debug-a8f4233018304656fd25.json",
+					"name" : "SDL2_image",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2_test::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2_test-Debug-f87df404c7e007717c16.json",
+					"name" : "SDL2_test",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2main::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2main-Debug-a480cea7b4ec8d97531c.json",
+					"name" : "SDL2main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "png-fix-itxt::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-png-fix-itxt-Debug-ee290363340c896bf514.json",
+					"name" : "png-fix-itxt",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "png_genfiles::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-png_genfiles-Debug-b5b574a5603246d7cae0.json",
+					"name" : "png_genfiles",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "png_genprebuilt::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-png_genprebuilt-Debug-82a0afba4a46ac344f14.json",
+					"name" : "png_genprebuilt",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "png_shared::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-png_shared-Debug-09c0431c52f71d094af4.json",
+					"name" : "png_shared",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "png_static::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-png_static-Debug-066ddd96c938b65a0e16.json",
+					"name" : "png_static",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngfix::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngfix-Debug-f4cfbd079b279b3fbaea.json",
+					"name" : "pngfix",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngimage::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngimage-Debug-59dd77152d3d3a5844c5.json",
+					"name" : "pngimage",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngstest::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngstest-Debug-25814496531396c35629.json",
+					"name" : "pngstest",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngtest::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngtest-Debug-89b5738034c1e3646711.json",
+					"name" : "pngtest",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngunknown::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngunknown-Debug-1f2ec7858eba254489d2.json",
+					"name" : "pngunknown",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "pngvalid::@0ccab45d953d31f6e478",
+					"jsonFile" : "target-pngvalid-Debug-e85403ac7e5193891f42.json",
+					"name" : "pngvalid",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "sdl_headers_copy::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-sdl_headers_copy-Debug-567ff21cfe1c56cdf2ea.json",
+					"name" : "sdl_headers_copy",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "uninstall::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-uninstall-Debug-f9e54fee11e3ba6e291f.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "zvp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zvp-Debug-77818ab3f4c0c01672c1.json",
+					"name" : "zvp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/xuncheng/game/c++game/cmake-build-debug",
+		"source" : "/home/xuncheng/game/c++game"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
