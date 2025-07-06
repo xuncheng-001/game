@@ -1,7 +1,6 @@
 #include <iostream>
-#include <SDL3/SDL.h>
-#define SDL_IMAGE_USE_COMMON_OPENGL_HEADERS
-#include <SDL3_image/SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 
 class Button {
     private:
@@ -36,16 +35,21 @@ class Button {
     }
     void render(SDL_Renderer *renderer)
     {
-        SDL_RenderTexture(renderer, texture, nullptr, &rect);
+        SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+    }
+    SDL_Texture *getTexture()const
+    {
+        return texture;
     }
 };
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
     //创建游戏窗口
-    SDL_Window *window = SDL_CreateWindow("僵尸大战植物",640, 480, 0);
+    IMG_Init(IMG_INIT_PNG);
+    SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,0);
     //创建渲染器
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
     if (!renderer)
     {
         std::cerr << "Failed to create renderer" << std::endl;
@@ -74,11 +78,11 @@ int main(int argc, char *argv[])
     {
         while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_EVENT_QUIT)
+            if (event.type == SDL_QUIT)
             {
                 running = false;
             }
-            else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
                 int mouseX = event.motion.x;
                 int mouseY = event.motion.y;
@@ -86,10 +90,12 @@ int main(int argc, char *argv[])
             }
         }
 
-        SDL_RenderTexture(renderer, background, nullptr, nullptr);
+
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
+
+        SDL_RenderCopy(renderer, background, nullptr, nullptr);
 
         button.render(renderer);
         SDL_RenderPresent(renderer);

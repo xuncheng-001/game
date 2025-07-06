@@ -44,12 +44,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/xuncheng/game/c++game/cmake-build-debug/SDL/cmake_install.cmake")
+  include("/home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/xuncheng/game/c++game/cmake-build-debug/SDL_image/cmake_install.cmake")
+  include("/home/xuncheng/game/c++game/cmake-build-debug/SDL2_image-2.8.0/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
