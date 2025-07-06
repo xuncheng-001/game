@@ -1,1 +1,1 @@
-/usr/bin/c++ -g CMakeFiles/zvp.dir/main.cpp.o -o zvp  -Wl,-rpath,/home/xuncheng/game/c++game/cmake-build-debug/SDL2_image-2.8.0:/home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0 SDL2_image-2.8.0/libSDL2_image-2.0d.so.0.800.0 -lpng SDL2-2.30.0/libSDL2-2.0d.so.0.3000.0
+/usr/bin/c++ -g CMakeFiles/zvp.dir/main.cpp.o -o zvp  -Wl,-rpath,/home/xuncheng/game/c++game/cmake-build-debug/SDL2_image-2.8.0:/home/xuncheng/game/c++game/cmake-build-debug/SDL2-2.30.0 SDL2_image-2.8.0/libSDL2_image-2.0d.so.0.800.0 SDL2-2.30.0/libSDL2-2.0d.so.0.3000.0

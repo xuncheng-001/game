@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    SDL_Texture* background = IMG_LoadTexture(renderer, "button.png");
+    SDL_Texture* background = IMG_LoadTexture(renderer, "photo/button.png");
     if (!background)
     {
         std::cerr << "Failed to load background" << std::endl;

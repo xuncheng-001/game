@@ -85,51 +85,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/xuncheng/game/c++game/cmake-build-debug/CMakeFiles /home/xuncheng/game/c++game/cmake-build-debug//CMakeFiles/progress.marks
@@ -265,149 +220,6 @@ SDL2_image/fast:
 	$(MAKE) $(MAKESILENT) -f SDL2_image-2.8.0/CMakeFiles/SDL2_image.dir/build.make SDL2_image-2.8.0/CMakeFiles/SDL2_image.dir/build
 .PHONY : SDL2_image/fast
 
-#=============================================================================
-# Target rules for targets named png_genprebuilt
-
-# Build rule for target.
-png_genprebuilt: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 png_genprebuilt
-.PHONY : png_genprebuilt
-
-# fast build rule for target.
-png_genprebuilt/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/png_genprebuilt.dir/build.make libpng/CMakeFiles/png_genprebuilt.dir/build
-.PHONY : png_genprebuilt/fast
-
-#=============================================================================
-# Target rules for targets named png_genfiles
-
-# Build rule for target.
-png_genfiles: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 png_genfiles
-.PHONY : png_genfiles
-
-# fast build rule for target.
-png_genfiles/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/png_genfiles.dir/build.make libpng/CMakeFiles/png_genfiles.dir/build
-.PHONY : png_genfiles/fast
-
-#=============================================================================
-# Target rules for targets named png_shared
-
-# Build rule for target.
-png_shared: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 png_shared
-.PHONY : png_shared
-
-# fast build rule for target.
-png_shared/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/png_shared.dir/build.make libpng/CMakeFiles/png_shared.dir/build
-.PHONY : png_shared/fast
-
-#=============================================================================
-# Target rules for targets named png_static
-
-# Build rule for target.
-png_static: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 png_static
-.PHONY : png_static
-
-# fast build rule for target.
-png_static/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/png_static.dir/build.make libpng/CMakeFiles/png_static.dir/build
-.PHONY : png_static/fast
-
-#=============================================================================
-# Target rules for targets named pngtest
-
-# Build rule for target.
-pngtest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngtest
-.PHONY : pngtest
-
-# fast build rule for target.
-pngtest/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngtest.dir/build.make libpng/CMakeFiles/pngtest.dir/build
-.PHONY : pngtest/fast
-
-#=============================================================================
-# Target rules for targets named pngvalid
-
-# Build rule for target.
-pngvalid: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngvalid
-.PHONY : pngvalid
-
-# fast build rule for target.
-pngvalid/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngvalid.dir/build.make libpng/CMakeFiles/pngvalid.dir/build
-.PHONY : pngvalid/fast
-
-#=============================================================================
-# Target rules for targets named pngstest
-
-# Build rule for target.
-pngstest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngstest
-.PHONY : pngstest
-
-# fast build rule for target.
-pngstest/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngstest.dir/build.make libpng/CMakeFiles/pngstest.dir/build
-.PHONY : pngstest/fast
-
-#=============================================================================
-# Target rules for targets named pngunknown
-
-# Build rule for target.
-pngunknown: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngunknown
-.PHONY : pngunknown
-
-# fast build rule for target.
-pngunknown/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngunknown.dir/build.make libpng/CMakeFiles/pngunknown.dir/build
-.PHONY : pngunknown/fast
-
-#=============================================================================
-# Target rules for targets named pngimage
-
-# Build rule for target.
-pngimage: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngimage
-.PHONY : pngimage
-
-# fast build rule for target.
-pngimage/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngimage.dir/build.make libpng/CMakeFiles/pngimage.dir/build
-.PHONY : pngimage/fast
-
-#=============================================================================
-# Target rules for targets named pngfix
-
-# Build rule for target.
-pngfix: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pngfix
-.PHONY : pngfix
-
-# fast build rule for target.
-pngfix/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/pngfix.dir/build.make libpng/CMakeFiles/pngfix.dir/build
-.PHONY : pngfix/fast
-
-#=============================================================================
-# Target rules for targets named png-fix-itxt
-
-# Build rule for target.
-png-fix-itxt: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 png-fix-itxt
-.PHONY : png-fix-itxt
-
-# fast build rule for target.
-png-fix-itxt/fast:
-	$(MAKE) $(MAKESILENT) -f libpng/CMakeFiles/png-fix-itxt.dir/build.make libpng/CMakeFiles/png-fix-itxt.dir/build
-.PHONY : png-fix-itxt/fast
-
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -439,13 +251,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... install"
-	@echo "... install/local"
-	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... png_genfiles"
-	@echo "... png_genprebuilt"
 	@echo "... sdl_headers_copy"
 	@echo "... uninstall"
 	@echo "... SDL2"
@@ -453,15 +259,6 @@ help:
 	@echo "... SDL2_image"
 	@echo "... SDL2_test"
 	@echo "... SDL2main"
-	@echo "... png-fix-itxt"
-	@echo "... png_shared"
-	@echo "... png_static"
-	@echo "... pngfix"
-	@echo "... pngimage"
-	@echo "... pngstest"
-	@echo "... pngtest"
-	@echo "... pngunknown"
-	@echo "... pngvalid"
 	@echo "... zvp"
 	@echo "... main.o"
 	@echo "... main.i"
