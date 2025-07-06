@@ -46,6 +46,12 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     //创建游戏窗口
     IMG_Init(IMG_INIT_PNG);
+    if (!IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)
+    {
+        std::cerr << "Failed to initialize image" << std::endl;
+        SDL_Quit();
+        return 1;
+    }
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,0);
     //创建渲染器
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
@@ -56,8 +62,8 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return -1;
     }
-
-    SDL_Texture* background = IMG_LoadTexture(renderer, "photo/button.png");
+    //加载背景图片
+    SDL_Texture* background = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/back1.png");
     if (!background)
     {
         std::cerr << "Failed to load background" << std::endl;
@@ -66,8 +72,8 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return -1;
     }
-    //加载图片
-    Button button(renderer, "photo/button.png", 220, 200, 200, 80);
+    //加载按钮图片
+    Button button(renderer, "/home/xuncheng/game/c++game/photo/button1.png", 220, 200, 200, 80);
 
 
     bool running = true;
@@ -83,8 +89,13 @@ int main(int argc, char *argv[])
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-                int mouseX = event.motion.x;
-                int mouseY = event.motion.y;
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+
+                if (button.click(mouseX, mouseY))
+                {
+                    std::cerr << "Button clicked" << std::endl;
+                }
 
             }
         }

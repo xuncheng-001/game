@@ -1,0 +1,183 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.30"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "SDL2-2.30.0",
+					"jsonFile" : "directory-SDL2-2.30.0-Debug-60f324d0f9c56d57195e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.4"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "SDL2-2.30.0",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						3,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"build" : "SDL2_image-2.8.0",
+					"jsonFile" : "directory-SDL2_image-2.8.0-Debug-6a372b263169b4d37c8d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "SDL2_image-2.8.0",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "zvp",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "SDL2",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						3,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "SDL2_image",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2-Debug-7c26794943794141ce1c.json",
+					"name" : "SDL2",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2-static::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2-static-Debug-641ba8839fa3153e02f7.json",
+					"name" : "SDL2-static",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "SDL2_image::@fea366d737a481bc7f35",
+					"jsonFile" : "target-SDL2_image-Debug-a8f4233018304656fd25.json",
+					"name" : "SDL2_image",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2_test::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2_test-Debug-b426f54fe44a13372254.json",
+					"name" : "SDL2_test",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "SDL2main::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-SDL2main-Debug-2319eacbb1ccafdce70e.json",
+					"name" : "SDL2main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "sdl_headers_copy::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-sdl_headers_copy-Debug-567ff21cfe1c56cdf2ea.json",
+					"name" : "sdl_headers_copy",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "uninstall::@7072c819dc6b05e766d5",
+					"jsonFile" : "target-uninstall-Debug-f9e54fee11e3ba6e291f.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "zvp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zvp-Debug-cd7558cb4562003806e2.json",
+					"name" : "zvp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/xuncheng/game/c++game/cmake-build-debug",
+		"source" : "/home/xuncheng/game/c++game"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

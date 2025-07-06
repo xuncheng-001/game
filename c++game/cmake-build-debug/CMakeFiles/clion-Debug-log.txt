@@ -173,8 +173,6 @@
 -- CFLAGS and LDFLAGS environment variables correctly.
 -- 
 -- Configuring SDL2_image 2.8.0
-CMake Error at CMakeLists.txt:8 (add_subdirectory):
-  add_subdirectory given source "libpng" which is not an existing directory.
-
-
--- Configuring incomplete, errors occurred!
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/xuncheng/game/c++game/cmake-build-debug

@@ -2,8 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/c++game/SDL" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/c++game/SDL_image" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/c++game/libpng" vcs="Git" />
   </component>
 </project>

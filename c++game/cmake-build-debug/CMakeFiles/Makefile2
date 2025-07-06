@@ -121,8 +121,8 @@ SDL2_image-2.8.0/clean: SDL2_image-2.8.0/CMakeFiles/SDL2_image.dir/clean
 # Target rules for target CMakeFiles/zvp.dir
 
 # All Build rule for target.
-CMakeFiles/zvp.dir/all: SDL2_image-2.8.0/CMakeFiles/SDL2_image.dir/all
 CMakeFiles/zvp.dir/all: SDL2-2.30.0/CMakeFiles/SDL2.dir/all
+CMakeFiles/zvp.dir/all: SDL2_image-2.8.0/CMakeFiles/SDL2_image.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/zvp.dir/build.make CMakeFiles/zvp.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/zvp.dir/build.make CMakeFiles/zvp.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/xuncheng/game/c++game/cmake-build-debug/CMakeFiles --progress-num=100 "Built target zvp"
