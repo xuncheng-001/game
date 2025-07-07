@@ -41,6 +41,50 @@ class Button {
         return texture;
     }
 };
+
+class Player {
+    private:
+    SDL_Texture *texture;
+    SDL_FRect rect;
+    public:
+    float speed = 0.01;
+    Player(SDL_Renderer *renderer, const char* imagePath, int x, int y, int w, int h)
+    {
+        texture = IMG_LoadTexture(renderer, imagePath);
+        if (!texture)
+        {
+            std::cerr << "Failed to load player image" << std::endl;
+            return;
+        }
+        rect.x = static_cast<float>(x);
+        rect.y = static_cast<float>(y);
+        rect.w = static_cast<float>(w);
+        rect.h = static_cast<float>(h);
+    }
+    ~Player()
+    {
+        SDL_DestroyTexture(texture);
+    }
+    //键盘控制移动和动作
+    void movement(const Uint8 *keyboardState)
+    {
+        if (keyboardState[SDL_SCANCODE_A])
+        {
+            rect.x -= speed;
+        }
+        if (keyboardState[SDL_SCANCODE_D])
+        {
+            rect.x += speed;
+        }
+    }
+    void render(SDL_Renderer *renderer)
+    {
+        SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+    }
+
+};
+
+
 int main(int argc, char *argv[])
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -63,8 +107,8 @@ int main(int argc, char *argv[])
         return -1;
     }
     //加载背景图片
-    SDL_Texture* background = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/back1.png");
-    if (!background)
+    SDL_Texture* background1 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/back1.png");
+    if (!background1)
     {
         std::cerr << "Failed to load background" << std::endl;
         SDL_DestroyRenderer(renderer);
@@ -72,9 +116,15 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return -1;
     }
+    //新的背景图片
+    SDL_Texture* background2 = nullptr;
     //加载按钮图片
     Button button(renderer, "/home/xuncheng/game/c++game/photo/button1.png", 220, 200, 200, 80);
+    //加载玩家图片
+    Player player(renderer, "/home/xuncheng/game/c++game/photo/player.png", 50, 300, 50, 50);
 
+    //用于判断是否点击按钮
+    bool buttonClicked = false;
 
     bool running = true;
     //SDL 事件对象，用于接收用户输入
@@ -94,20 +144,32 @@ int main(int argc, char *argv[])
 
                 if (button.click(mouseX, mouseY))
                 {
-                    std::cerr << "Button clicked" << std::endl;
+                    buttonClicked = true;
+                    background2 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/fireback.png");
                 }
 
             }
         }
 
+        player.movement(SDL_GetKeyboardState(nullptr));
+
 
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
+        if (buttonClicked)
+        {
+            SDL_RenderCopy(renderer, background2, nullptr, nullptr);
+            player.render(renderer);
+        }
+        else
+        {
+            SDL_RenderCopy(renderer, background1, nullptr, nullptr);
+            button.render(renderer);
+        }
 
-        SDL_RenderCopy(renderer, background, nullptr, nullptr);
 
-        button.render(renderer);
+
 
         //更新渲染器
         SDL_RenderPresent(renderer);
