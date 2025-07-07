@@ -20,7 +20,7 @@ private:
 public:
     int health_;
     bool wudi=false;
-    bool wuditime=0;
+    float wuditime=0;
     Plant(SDL_Renderer *renderer, const char* imagePath, int x, int y, int w, int h,int health)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
@@ -49,7 +49,31 @@ public:
     }
     void takeDamage(int damage)
     {
-        health_ = health_ - damage;
+        if (!wudi)
+        {
+            if (health_ >=0)
+            {
+                health_ -= damage;
+                wudi=true;
+                wuditime=0.3;
+            }
+            if (health_ <= 0)
+            {
+                health_=0;
+            }
+        }
+    }
+    void WuDitimeing(float nettime)
+    {
+        if (wuditime>0)
+        {
+            wuditime-=nettime;
+        }
+        if (wuditime<=0)
+        {
+            wuditime=0;
+            wudi=false;
+        }
     }
 };
 class Button {
@@ -95,8 +119,11 @@ class Button {
 class Player {
     private:
     SDL_Texture *texture;
+    SDL_Texture *walktexture;
     SDL_FRect rect;
     public:
+    //走路
+    bool onfoot=false;
     //血量和无敌状态,剩余的无敌时间
     int health=100;
     bool wudi=false;
@@ -109,9 +136,10 @@ class Player {
     float jumpSpeed = 200;
     float H_speed = 0;
     bool jumping = false;
-    Player(SDL_Renderer *renderer, const char* imagePath, int x, int y, int w, int h)
+    Player(SDL_Renderer *renderer, const char* imagePath,const char* walkimagePath, int x, int y, int w, int h)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
+        walktexture = IMG_LoadTexture(renderer, walkimagePath);
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -131,6 +159,10 @@ class Player {
         F_rect.y= 300;
         F_rect.w= 10;
         F_rect.h= 50;
+        if (!keyboardState[SDL_SCANCODE_A] && !keyboardState[SDL_SCANCODE_D])
+        {
+            onfoot=false;
+        }
         //无敌时间和无敌状态
         if (wuditime>0)
         {
@@ -144,10 +176,12 @@ class Player {
         }
         if (keyboardState[SDL_SCANCODE_A])
         {
+            onfoot=true;
             rect.x -= speed;
         }
         if (keyboardState[SDL_SCANCODE_D])
         {
+            onfoot=true;
             rect.x += speed;
         }
         if (keyboardState[SDL_SCANCODE_W] && !jumping)
@@ -207,7 +241,15 @@ class Player {
     }
     void render(SDL_Renderer *renderer)
     {
-        SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+        if (onfoot)
+        {
+            SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
+        }
+        else
+        {
+            SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+        }
+
     }
 
 };
@@ -234,7 +276,7 @@ int main(int argc, char *argv[])
     //加载按钮图片
     Button button(renderer, "/home/xuncheng/game/c++game/photo/button1.png", 220, 200, 200, 80);
     //加载玩家图片
-    Player player(renderer, "/home/xuncheng/game/c++game/photo/player.png", 50, 300, 50, 50);
+    Player player(renderer, "/home/xuncheng/game/c++game/photo/player.png","/home/xuncheng/game/c++game/photo/walk1.png" ,50, 300, 50, 50);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png", 200, 300, 50, 50,20);
     //用于判断是否点击按钮
@@ -277,6 +319,10 @@ int main(int argc, char *argv[])
         }
 
         player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
+        for (auto& plant : plants)
+        {
+            plant->WuDitimeing(nettime);
+        }
 
 
 
