@@ -119,9 +119,16 @@ class Button {
 class Player {
     private:
     SDL_Texture *texture;
+    SDL_Texture *texture_right;
     SDL_Texture *walktexture;
+    SDL_Texture *walktexture_right;
+    SDL_Texture *zhuahentexture;
     SDL_FRect rect;
     public:
+    //面向右还是左
+    bool face=false;
+    //是否按j键
+    bool pin_a=false;
     //走路
     bool onfoot=false;
     //血量和无敌状态,剩余的无敌时间
@@ -136,10 +143,18 @@ class Player {
     float jumpSpeed = 200;
     float H_speed = 0;
     bool jumping = false;
-    Player(SDL_Renderer *renderer, const char* imagePath,const char* walkimagePath, int x, int y, int w, int h)
+    Player(SDL_Renderer *renderer, const char* imagePath,
+        const char* right_imagePath,
+        const char* walkimagePath,
+        const char* walkimagePath_right,
+        const char* zhuahenimagePath,
+        int x, int y, int w, int h)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
+        texture_right = IMG_LoadTexture(renderer, right_imagePath);
         walktexture = IMG_LoadTexture(renderer, walkimagePath);
+        walktexture_right = IMG_LoadTexture(renderer, walkimagePath_right);
+        zhuahentexture = IMG_LoadTexture(renderer, zhuahenimagePath);
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -155,10 +170,14 @@ class Player {
         float oldx = rect.x;
         float oldy = rect.y;
         //平a的伤害范围
-        F_rect.x= 200;
-        F_rect.y= 300;
+        F_rect.x= rect.x + rect.w;
+        F_rect.y= rect.y ;
         F_rect.w= 10;
-        F_rect.h= 50;
+        F_rect.h= rect.h;
+        if (!keyboardState[SDL_SCANCODE_J])
+        {
+            pin_a = false;
+        }
         if (!keyboardState[SDL_SCANCODE_A] && !keyboardState[SDL_SCANCODE_D])
         {
             onfoot=false;
@@ -177,11 +196,13 @@ class Player {
         if (keyboardState[SDL_SCANCODE_A])
         {
             onfoot=true;
+            face=false;
             rect.x -= speed;
         }
         if (keyboardState[SDL_SCANCODE_D])
         {
             onfoot=true;
+            face=true;
             rect.x += speed;
         }
         if (keyboardState[SDL_SCANCODE_W] && !jumping)
@@ -192,7 +213,7 @@ class Player {
         }
         if (keyboardState[SDL_SCANCODE_J])
         {
-
+            pin_a = true;
             for (auto& plant : plants)
             {
 
@@ -243,12 +264,33 @@ class Player {
     {
         if (onfoot)
         {
-            SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
+            if (face)
+            {
+                SDL_RenderCopyF(renderer, walktexture_right, nullptr, &rect);
+            }
+            else
+            {
+                SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
+            }
+
         }
         else
         {
-            SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            if (face)
+            {
+                SDL_RenderCopyF(renderer, texture_right, nullptr, &rect);
+            }
+            else
+            {
+                SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            }
+
         }
+        if (pin_a)
+        {
+            SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &F_rect);
+        }
+
 
     }
 
@@ -276,7 +318,12 @@ int main(int argc, char *argv[])
     //加载按钮图片
     Button button(renderer, "/home/xuncheng/game/c++game/photo/button1.png", 220, 200, 200, 80);
     //加载玩家图片
-    Player player(renderer, "/home/xuncheng/game/c++game/photo/player.png","/home/xuncheng/game/c++game/photo/walk1.png" ,50, 300, 50, 50);
+    Player player(renderer, "/home/xuncheng/game/c++game/photo/player2.png",
+        "/home/xuncheng/game/c++game/photo/player2_right2.png",
+        "/home/xuncheng/game/c++game/photo/walk2.png",
+        "/home/xuncheng/game/c++game/photo/walk2_right.png",
+        "/home/xuncheng/game/c++game/photo/zhuahen.png" ,
+        50, 300, 50, 50);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png", 200, 300, 50, 50,20);
     //用于判断是否点击按钮
@@ -331,8 +378,8 @@ int main(int argc, char *argv[])
         if (buttonClicked)
         {
             SDL_RenderCopy(renderer, background2, nullptr, nullptr);
-            player.render(renderer);
             plant1.render(renderer);
+            player.render(renderer);
         }
         else
         {
@@ -346,8 +393,6 @@ int main(int argc, char *argv[])
         //更新渲染器
         SDL_RenderPresent(renderer);
     }
-
-
 
     //清理资源
     SDL_DestroyRenderer(renderer);
