@@ -200,4 +200,9 @@ CMakeFiles/zvp.dir/main.cpp.o: /home/xuncheng/game/c++game/main.cpp \
  /home/xuncheng/game/c++game/SDL2_image-2.8.0/include/SDL_image.h \
  /home/xuncheng/game/c++game/SDL2-2.30.0/include/SDL_version.h \
  /home/xuncheng/game/c++game/SDL2-2.30.0/include/begin_code.h \
- /home/xuncheng/game/c++game/SDL2-2.30.0/include/close_code.h
+ /home/xuncheng/game/c++game/SDL2-2.30.0/include/close_code.h \
+ /usr/include/c++/9/vector /usr/include/c++/9/bits/stl_uninitialized.h \
+ /usr/include/c++/9/utility /usr/include/c++/9/bits/stl_relops.h \
+ /usr/include/c++/9/bits/stl_vector.h \
+ /usr/include/c++/9/bits/stl_bvector.h /usr/include/c++/9/bits/vector.tcc \
+ /usr/include/c++/9/ctime
