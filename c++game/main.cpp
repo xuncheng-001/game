@@ -97,7 +97,7 @@ public:
         }
 
     }
-    //用于检测是否在攻击范围内
+    //用于检测是否在攻击范围内,给豌豆射手攻击用的
     bool Inrange(const SDL_FRect player_rect)const
     {
         float x=player_rect.x+player_rect.w/2-(rect.x+rect.w/2);
@@ -105,8 +105,12 @@ public:
         float distance=std::sqrt(x*x+y*y);
         return distance < fire_range;
     }
+    void recover(Plant* plants,float recoverd_health)
+    {
+            plants->health_+=recoverd_health;
+    }
     //不同的植物类型又有不同的特性
-   void update(float nettime,const SDL_FRect player_rect)
+   void update(float nettime,const SDL_FRect player_rect,std::vector<Plant*> plants)
     {
         if (fire_nettime>0)
         {
@@ -159,7 +163,15 @@ public:
         //植物类型，1为向日葵
         if (type_==1)
         {
-
+            if (health_>0 && fire_nettime==0)
+            {
+                fire_nettime=2;
+                for (auto plant : plants)
+                {
+                    recover(plant,10);
+                    std::cerr<<"Recovering plant "<<std::endl;
+                }
+            }
         }
         //懒得写多一个类，就把戴夫和推车放在这里了
         //植物类型，2为戴夫
@@ -181,11 +193,6 @@ class Button {
     {
         //加载图片,设置按钮的位置和大小
         texture = IMG_LoadTexture(renderer, imagePath);
-        if (!texture)
-        {
-            std::cerr << "Failed to load button image" << std::endl;
-            return;
-        }
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -438,6 +445,8 @@ int main(int argc, char *argv[])
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
         "/home/xuncheng/game/c++game/photo/back2.png",200, 300, 50, 50,50,0);
+    Plant plant2(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
+        "/home/xuncheng/game/c++game/photo/back2.png",400, 300, 50, 50,50,1);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -448,7 +457,9 @@ int main(int argc, char *argv[])
     Uint32 lastTime = 0;
     //植物总和
     std::vector<Plant*> plants;
+    //将植物加入到数组里面
     plants.push_back(&plant1);
+    plants.push_back(&plant2);
     while (running)
     {
 
@@ -486,11 +497,12 @@ int main(int argc, char *argv[])
             for (auto& plant : plants)
             {
                 plant->WuDitimeing(nettime);
-                plant->update(nettime,player.F_rect);
+                plant->update(nettime,player.F_rect,plants);
             }
 
             SDL_RenderCopy(renderer, background2, nullptr, nullptr);
             plant1.render(renderer);
+            plant2.render(renderer);
             player.render(renderer);
         }
         else
