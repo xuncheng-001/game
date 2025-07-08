@@ -97,7 +97,7 @@ public:
         }
 
     }
-    //用于检测是否在攻击范围内,给豌豆射手攻击用的
+    //用于检测是否在攻击范围内,给豌豆射手攻击用的(戴夫躲避也可以使用)
     bool Inrange(const SDL_FRect player_rect)const
     {
         float x=player_rect.x+player_rect.w/2-(rect.x+rect.w/2);
@@ -112,6 +112,7 @@ public:
     //不同的植物类型又有不同的特性
    void update(float nettime,const SDL_FRect player_rect,std::vector<Plant*> plants)
     {
+        bool left=player_rect.x+player_rect.w/2<rect.x+rect.w/2;
         if (fire_nettime>0)
         {
             fire_nettime-=nettime;
@@ -125,7 +126,7 @@ public:
         if (type_==0)
         {
             fire_range=200;
-            bool left=player_rect.x<rect.x;
+
 
             if (Inrange(player_rect) && fire_nettime==0)
             {
@@ -169,7 +170,6 @@ public:
                 for (auto plant : plants)
                 {
                     recover(plant,10);
-                    std::cerr<<"Recovering plant "<<std::endl;
                 }
             }
         }
@@ -177,7 +177,22 @@ public:
         //植物类型，2为戴夫
         if (type_==2)
         {
-
+            fire_range=200;
+            if (health_==0)
+            {
+                game_finished=true;
+            }
+            if (Inrange(player_rect))
+            {
+                if (left)
+                {
+                    rect.x+=30*nettime;
+                }
+                else
+                {
+                    rect.x-=30*nettime;
+                }
+            }
         }
 
     }
@@ -227,6 +242,12 @@ class Player {
     SDL_Texture *zhuahentexture;
     SDL_FRect rect;
     public:
+    //地面选择(false为下地面)
+    bool ground_chosen=false;
+    //地面高度
+    float ground_height ;
+    float ground_height2;
+    float time=0;
     //面向右还是左
     bool face=false;
     //是否按j键
@@ -240,9 +261,9 @@ class Player {
     //攻击范围
     SDL_FRect F_rect;
     //满足跳跃的参数
-    float speed = 0.01;
-    float gravity = 350;
-    float jumpSpeed = 200;
+    float speed = 0.03;
+    float gravity = 800;
+    float jumpSpeed = 600;
     float H_speed = 0;
     bool jumping = false;
     Player(SDL_Renderer *renderer, const char* imagePath,
@@ -313,6 +334,7 @@ class Player {
             jumping = true;
             H_speed = -jumpSpeed;
         }
+
         if (keyboardState[SDL_SCANCODE_J])
         {
             pin_a = true;
@@ -368,27 +390,107 @@ class Player {
                     }
                 }
             }
+        }
 
-        }
-        //当玩家触地时，重置跳跃状态和垂直速度
-        if (rect.y >= 300)
+        //不同的地面高度
+        if (rect.x >=0 && rect.x<200)
         {
-            rect.y = 300;
-            jumping = false;
-            H_speed = 0;
+            ground_height= 820-0.7*rect.x;
         }
+        if (rect.x>200 && rect.x<960)
+        {
+            ground_height= 680;
+        }
+        if (rect.x>=960 && rect.x<1160)
+        {
+            ground_height= 680+(rect.x-960)*0.8;
+        }
+        //上层的地面高度
+        if (rect.x>=0 && rect.x<=180)
+        {
+            ground_height2= 200;
+        }
+        if (rect.x>180 && rect.x<580)
+        {
+            ground_height2= 200+(rect.x-180)*0.8;
+        }
+        if (rect.x>=940 && rect.x<1140)
+        {
+            ground_height2= 520-(rect.x-940)*0.8;
+        }
+        if (rect.x>=1140 )
+        {
+            ground_height2= 360;
+        }
+
+
+        if (rect.y<ground_height2)
+        {
+            ground_chosen=true;
+        }
+        if (keyboardState[SDL_SCANCODE_S])
+        {
+            ground_chosen =false;
+        }
+
+        //当玩家触地时，重置跳跃状态和垂直速度
+        if (!ground_chosen)
+        {
+            if (rect.y >= ground_height)
+            {
+                rect.y = ground_height;
+                jumping = false;
+                H_speed = 0;
+            }
+        }
+        else
+        {
+            if (rect.y >= ground_height2)
+            {
+                rect.y = ground_height2;
+                jumping = false;
+                H_speed = 0;
+            }
+        }
+
     }
-    void render(SDL_Renderer *renderer)
+    void render(SDL_Renderer *renderer,float nettime)
     {
         if (onfoot)
         {
             if (face)
             {
-                SDL_RenderCopyF(renderer, walktexture_right, nullptr, &rect);
+                if (time <= 0.2)
+                {
+                    SDL_RenderCopyF(renderer,texture_right,nullptr,&rect);
+                    time += nettime;
+                }
+                if (time < 0.4 && time >= 0.2)
+                {
+                    SDL_RenderCopyF(renderer, walktexture_right, nullptr, &rect);
+                    time += nettime;
+                }
+                if (time >=0.4)
+                {
+                    time = 0;
+                }
             }
             else
             {
-                SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
+                if (time <= 0.2)
+                {
+                    SDL_RenderCopyF(renderer,texture,nullptr,&rect);
+                    time += nettime;
+                }
+                if (time < 0.4 && time >= 0.2)
+                {
+                    SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
+                    time += nettime;
+                }
+                if (time >=0.4)
+                {
+                    time = 0;
+                }
             }
 
         }
@@ -420,13 +522,7 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     //创建游戏窗口
     IMG_Init(IMG_INIT_PNG);
-    if (!IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)
-    {
-        std::cerr << "Failed to initialize image" << std::endl;
-        SDL_Quit();
-        return 1;
-    }
-    SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,0);
+    SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
     //创建渲染器
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
     //加载背景图片
@@ -441,12 +537,14 @@ int main(int argc, char *argv[])
         "/home/xuncheng/game/c++game/photo/walk2.png",
         "/home/xuncheng/game/c++game/photo/walk2_right.png",
         "/home/xuncheng/game/c++game/photo/zhuahen.png" ,
-        50, 300, 50, 50);
+        200, 500, 100, 100);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",200, 300, 50, 50,50,0);
+        "/home/xuncheng/game/c++game/photo/back2.png",1140, 400, 50, 50,50,0);
     Plant plant2(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
         "/home/xuncheng/game/c++game/photo/back2.png",400, 300, 50, 50,50,1);
+    Plant daifu(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
+        "/home/xuncheng/game/c++game/photo/back2.png",300, 680, 50, 50,50,2);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -460,6 +558,7 @@ int main(int argc, char *argv[])
     //将植物加入到数组里面
     plants.push_back(&plant1);
     plants.push_back(&plant2);
+    plants.push_back(&daifu);
     while (running)
     {
 
@@ -482,7 +581,7 @@ int main(int argc, char *argv[])
                 if (button.click(mouseX, mouseY))
                 {
                     buttonClicked = true;
-                    background2 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/fireback.png");
+                    background2 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/game_back1.png");
                 }
 
             }
@@ -503,7 +602,8 @@ int main(int argc, char *argv[])
             SDL_RenderCopy(renderer, background2, nullptr, nullptr);
             plant1.render(renderer);
             plant2.render(renderer);
-            player.render(renderer);
+            daifu.render(renderer);
+            player.render(renderer,nettime);
         }
         else
         {
@@ -512,7 +612,7 @@ int main(int argc, char *argv[])
         }
 
 
-       std::cerr << plant1.health_ << std::endl;
+       //std::cerr << plant1.health_ << std::endl;
 
         //更新渲染器
         SDL_RenderPresent(renderer);
