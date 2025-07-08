@@ -25,6 +25,8 @@ public:
     float fire_nettime=0;
     //是否已经攻击
     bool is_firing = false;
+    //豌豆射手中子弹的发射方向
+    bool firing_facing = true;
 
     int type_;
     int health_;
@@ -127,6 +129,7 @@ public:
                     FireTexture.x=rect.x-FireTexture.w/2;
                     FireTexture.y=rect.y;
                     FireTexture.h=20;
+                    firing_facing=true;
                 }
                 else
                 {
@@ -134,13 +137,14 @@ public:
                     FireTexture.x=rect.x+FireTexture.w/2+rect.w;
                     FireTexture.y=rect.y;
                     FireTexture.h=20;
+                    firing_facing=false;
                 }
                 is_firing=true;
                 fire_nettime=10;
             }
             if (is_firing)
             {
-                if (left)
+                if (firing_facing)
                 {
                     FireTexture.x-=100*nettime;
                 }
@@ -150,6 +154,18 @@ public:
                 }
             }
         }
+        //植物类型，1为向日葵
+        if (type_==1)
+        {
+
+        }
+        //懒得写多一个类，就把戴夫和推车放在这里了
+        //植物类型，2为戴夫
+        if (type_==2)
+        {
+
+        }
+
     }
 
 };
@@ -419,7 +435,7 @@ int main(int argc, char *argv[])
         50, 300, 50, 50);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",200, 300, 50, 50,20,0);
+        "/home/xuncheng/game/c++game/photo/back2.png",200, 300, 50, 50,50,0);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
