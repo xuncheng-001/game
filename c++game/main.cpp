@@ -4,6 +4,8 @@
 #include <vector>
 #include <ctime>
 #include <cmath>
+//全局变量，用于检测是否结束了游戏
+bool game_finished = false;
 
 //碰撞检测
 bool checkCollision(SDL_FRect rect1, SDL_FRect rect2)
@@ -475,21 +477,18 @@ int main(int argc, char *argv[])
             }
         }
 
-        player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
-        //更新植物无敌时间数据
-        for (auto& plant : plants)
-        {
-            plant->WuDitimeing(nettime);
-            plant->update(nettime,player.F_rect);
-        }
-
-
-
-
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
         if (buttonClicked)
         {
+            player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
+            //更新植物无敌时间数据
+            for (auto& plant : plants)
+            {
+                plant->WuDitimeing(nettime);
+                plant->update(nettime,player.F_rect);
+            }
+
             SDL_RenderCopy(renderer, background2, nullptr, nullptr);
             plant1.render(renderer);
             player.render(renderer);
