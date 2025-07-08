@@ -182,16 +182,14 @@ public:
             {
                 game_finished=true;
             }
-            if (Inrange(player_rect))
+            int random=rand()%3;
+            if (random==0)
             {
-                if (left)
-                {
-                    rect.x+=30*nettime;
-                }
-                else
-                {
-                    rect.x-=30*nettime;
-                }
+                rect.x-=30*nettime;
+            }
+            if (random==1)
+            {
+                rect.x+=30*nettime;
             }
         }
 
@@ -612,7 +610,6 @@ int main(int argc, char *argv[])
         }
 
 
-       //std::cerr << plant1.health_ << std::endl;
 
         //更新渲染器
         SDL_RenderPresent(renderer);
