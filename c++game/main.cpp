@@ -3,6 +3,7 @@
 #include "SDL_image.h"
 #include <vector>
 #include <ctime>
+#include <cmath>
 
 //碰撞检测
 bool checkCollision(SDL_FRect rect1, SDL_FRect rect2)
@@ -16,20 +17,27 @@ class Plant
 {
 private:
     SDL_Texture *texture;
+    SDL_Texture *FireTexture_;
     SDL_FRect rect;
+    SDL_FRect FireTexture;
 public:
+    //攻击冷却
+    float fire_nettime=0;
+    //是否已经攻击
+    bool is_firing = false;
+
+    int type_;
     int health_;
     bool wudi=false;
     float wuditime=0;
-    Plant(SDL_Renderer *renderer, const char* imagePath, int x, int y, int w, int h,int health)
+    float fire_range;
+    Plant(SDL_Renderer *renderer, const char* imagePath,
+        const char* fire_imagePath ,int x, int y, int w, int h,int health,int type)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
+        FireTexture_ = IMG_LoadTexture(renderer, fire_imagePath);
         health_ = health;
-        if (!texture)
-        {
-            std::cerr << "Failed to load plant image" << std::endl;
-            return;
-        }
+        type_ = type;
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -39,6 +47,10 @@ public:
     {
         return rect;
     }
+    SDL_FRect getFireRect() const
+    {
+        return FireTexture;
+    }
     ~Plant()
     {
         SDL_DestroyTexture(texture);
@@ -46,6 +58,11 @@ public:
     void render(SDL_Renderer *renderer)
     {
         SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+        //攻击过程就渲染攻击特效
+        if (is_firing)
+        {
+            SDL_RenderCopyF(renderer, FireTexture_, nullptr, &FireTexture);
+        }
     }
     void takeDamage(int damage)
     {
@@ -74,7 +91,67 @@ public:
             wuditime=0;
             wudi=false;
         }
+
     }
+    //用于检测是否在攻击范围内
+    bool Inrange(const SDL_FRect player_rect)const
+    {
+        float x=player_rect.x+player_rect.w/2-(rect.x+rect.w/2);
+        float y=player_rect.y+player_rect.h/2-(rect.y+rect.h/2);
+        float distance=std::sqrt(x*x+y*y);
+        return distance < fire_range;
+    }
+    //不同的植物类型又有不同的特性
+   void update(float nettime,const SDL_FRect player_rect)
+    {
+        if (fire_nettime>0)
+        {
+            fire_nettime-=nettime;
+        }
+        if (fire_nettime<=0)
+        {
+            fire_nettime=0;
+            is_firing=false;
+        }
+        //植物类型，0为豌豆射手
+        if (type_==0)
+        {
+            fire_range=200;
+            bool left=player_rect.x<rect.x;
+
+            if (Inrange(player_rect) && fire_nettime==0)
+            {
+                if (left)
+                {
+                    FireTexture.w=20;
+                    FireTexture.x=rect.x-FireTexture.w/2;
+                    FireTexture.y=rect.y;
+                    FireTexture.h=20;
+                }
+                else
+                {
+                    FireTexture.w=20;
+                    FireTexture.x=rect.x+FireTexture.w/2+rect.w;
+                    FireTexture.y=rect.y;
+                    FireTexture.h=20;
+                }
+                is_firing=true;
+                fire_nettime=10;
+            }
+            if (is_firing)
+            {
+                if (left)
+                {
+                    FireTexture.x-=100*nettime;
+                }
+                else
+                {
+                    FireTexture.x+=100*nettime;
+                }
+            }
+        }
+    }
+
 };
 class Button {
     private:
@@ -242,7 +319,23 @@ class Player {
                     {
                         health-=10;
                         wudi=true;
-                        wuditime=0.5;
+                        wuditime=1;
+                    }
+                    if (health<=0)
+                    {
+                        health=0;
+                    }
+                }
+            }
+            if (checkCollision(rect,plant->getFireRect()))
+            {
+                if (!wudi)
+                {
+                    if (health>0)
+                    {
+                        health-=10;
+                        wudi=true;
+                        wuditime=1;
                     }
                     if (health<=0)
                     {
@@ -325,7 +418,8 @@ int main(int argc, char *argv[])
         "/home/xuncheng/game/c++game/photo/zhuahen.png" ,
         50, 300, 50, 50);
     //加载植物图片
-    Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png", 200, 300, 50, 50,20);
+    Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
+        "/home/xuncheng/game/c++game/photo/back2.png",200, 300, 50, 50,20,0);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -366,10 +460,13 @@ int main(int argc, char *argv[])
         }
 
         player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
+        //更新植物无敌时间数据
         for (auto& plant : plants)
         {
             plant->WuDitimeing(nettime);
+            plant->update(nettime,player.F_rect);
         }
+
 
 
 
