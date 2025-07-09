@@ -837,46 +837,66 @@ int main(int argc, char *argv[])
     char* basePath = SDL_GetBasePath();
     std::string basePathStr = basePath;
     SDL_free(basePath);
-    std::cerr << basePathStr << std::endl;
     std::string buttonPath = basePathStr + "photo/button1.png";
+    std::string back1Path = basePathStr + "photo/back1.png";
+    std::string game_back1Path = basePathStr + "photo/game_back1.png";
+    std::string player2Path = basePathStr + "photo/player2.png";
+    std::string player2Path2 = basePathStr + "photo/player2_right2.png";
+    std::string walk2Path = basePathStr + "photo/walk2.png";
+    std::string walk2_rightPath = basePathStr + "photo/walk2_right.png";
+    std::string zhuahenPath = basePathStr + "photo/zhuahen.png";
+    std::string gongji_leftPath = basePathStr + "photo/gongji_left.png";
+    std::string health1Path = basePathStr + "photo/health1.png";
+    std::string health2Path = basePathStr + "photo/health2.png";
+    std::string health3Path = basePathStr + "photo/health3.png";
+    std::string health4Path = basePathStr + "photo/health4.png";
+    std::string health5Path = basePathStr + "photo/health5.png";
+    std::string health6Path = basePathStr + "photo/health6.png";
+    std::string health7Path = basePathStr + "photo/health7.png";
+    std::string health8Path = basePathStr + "photo/health8.png";
 
+    std::string plant1Path = basePathStr + "photo/plant1.png";
+    std::string wandouPath = basePathStr + "photo/wandou.png";
+    std::string daifu_walkPath = basePathStr + "photo/daifu_walk.png";
+    std::string tuichePath = basePathStr + "photo/tuiche.png";
+    std::string daifuPath = basePathStr + "photo/daifu2.png";
     //初始化随机数种子
     srand(static_cast<unsigned int>(time(NULL)));
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
     //创建渲染器
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
     //加载背景图片
-    SDL_Texture* background1 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/back1.png");
+    SDL_Texture* background1 = IMG_LoadTexture(renderer, back1Path.c_str());
     //新的背景图片
     SDL_Texture* background2 = nullptr;
     //加载按钮图片
     Button button(renderer, buttonPath.c_str(), 220, 200, 200, 80);
     //加载玩家图片
-    Player player(renderer, "/home/xuncheng/game/c++game/photo/player2.png",
-        "/home/xuncheng/game/c++game/photo/player2_right2.png",
-        "/home/xuncheng/game/c++game/photo/walk2.png",
-        "/home/xuncheng/game/c++game/photo/walk2_right.png",
-        "/home/xuncheng/game/c++game/photo/zhuahen.png" ,
-        "/home/xuncheng/game/c++game/photo/gongji_left.png",
-        "/home/xuncheng/game/c++game/photo/health1.png",
-        "/home/xuncheng/game/c++game/photo/health2.png",
-        "/home/xuncheng/game/c++game/photo/health3.png",
-        "/home/xuncheng/game/c++game/photo/health4.png",
-        "/home/xuncheng/game/c++game/photo/health5.png",
-        "/home/xuncheng/game/c++game/photo/health6.png",
-        "/home/xuncheng/game/c++game/photo/health7.png",
-        "/home/xuncheng/game/c++game/photo/health8.png",
+    Player player(renderer, player2Path.c_str(),
+        player2Path2.c_str(),
+        walk2Path.c_str(),
+        walk2_rightPath.c_str(),
+        zhuahenPath.c_str() ,
+        gongji_leftPath.c_str(),
+        health1Path.c_str(),
+        health2Path.c_str(),
+        health3Path.c_str(),
+        health4Path.c_str(),
+        health5Path.c_str(),
+        health6Path.c_str(),
+        health7Path.c_str(),
+        health8Path.c_str(),
         200, 500, 100, 100);
     //加载植物图片
-    Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/wandou.png",
-        "/home/xuncheng/game/c++game/photo/daifu_walk.png",130, 400, 50, 50,50,0);
-    Plant plant2(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",
-        "/home/xuncheng/game/c++game/photo/daifu_walk.png",400, 300, 50, 50,50,1);
-    Plant daifu(renderer, "/home/xuncheng/game/c++game/photo/daifu2.png",
-        "/home/xuncheng/game/c++game/photo/tuiche.png",
-        "/home/xuncheng/game/c++game/photo/daifu_walk.png",300, 0, 100, 100,50,2);
+    Plant plant1(renderer, plant1Path.c_str(),
+        wandouPath.c_str(),
+        daifu_walkPath.c_str(),130, 400, 50, 50,50,0);
+    Plant plant2(renderer, plant1Path.c_str(),
+        wandouPath.c_str(),
+        daifu_walkPath.c_str(),400, 300, 50, 50,50,1);
+    Plant daifu(renderer, daifuPath.c_str(),
+        tuichePath.c_str(),
+        daifu_walkPath.c_str(),300, 0, 100, 100,50,2);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -919,7 +939,7 @@ int main(int argc, char *argv[])
                 if (button.click(mouseX, mouseY))
                 {
                     buttonClicked = true;
-                    background2 = IMG_LoadTexture(renderer, "/home/xuncheng/game/c++game/photo/game_back1.png");
+                    background2 = IMG_LoadTexture(renderer, game_back1Path.c_str());
                 }
 
             }
