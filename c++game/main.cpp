@@ -6,6 +6,7 @@
 #include <cmath>
 //全局变量，用于检测是否结束了游戏
 bool game_finished = false;
+bool game_failed = false;
 std::string daifuxueliang;
 
 //碰撞检测
@@ -92,7 +93,7 @@ public:
     void render(SDL_Renderer *renderer,float nettime)
     {
 
-        //daifu独有的移动特效
+        //daifu独有的移动特效(顺便给豌豆和向日葵的切换图片用)
         daifu_walk += nettime;
         if (daifu_walk >= 0.15 &&daifu_walk <= 0.3)
         {
@@ -121,7 +122,14 @@ public:
         }
         else
         {
-            SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            if (daifu_walking)
+            {
+                SDL_RenderCopyF(renderer, diafu_walkTexture_, nullptr, &rect);
+            }
+            else
+            {
+                SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            }
             //攻击过程就渲染攻击特效
             if (is_firing)
             {
@@ -137,7 +145,7 @@ public:
             {
                 health_ -= damage;
                 wudi=true;
-                wuditime=0.3;
+                wuditime=1;
             }
             if (health_ <= 0)
             {
@@ -200,7 +208,7 @@ public:
                 {
                     Firerect.w=20;
                     Firerect.x=rect.x-Firerect.w/2;
-                    Firerect.y=rect.y;
+                    Firerect.y=rect.y+40;
                     Firerect.h=20;
                     firing_facing=true;
                 }
@@ -208,7 +216,7 @@ public:
                 {
                     Firerect.w=20;
                     Firerect.x=rect.x+Firerect.w/2+rect.w;
-                    Firerect.y=rect.y;
+                    Firerect.y=rect.y+40;
                     Firerect.h=20;
                     firing_facing=false;
                 }
@@ -232,7 +240,7 @@ public:
         {
             if (health_>0 && fire_nettime==0)
             {
-                fire_nettime=3;
+                fire_nettime=1;
                 for (auto plant : plants)
                 {
                     recover(plant,1);
@@ -259,11 +267,11 @@ public:
             }
             if (random==0)
             {
-                rect.x-=100*nettime;
+                rect.x-=300*nettime;
             }
             if (random==1)
             {
-                rect.x+=100*nettime;
+                rect.x+=500*nettime;
             }
             if (rect.x<0)
             {
@@ -529,7 +537,7 @@ class Player {
     //生命值
     SDL_FRect health_rect;
     //满足跳跃的参数
-    float speed = 0.1;
+    float speed = 0.2;
     float gravity = 800;
     float jumpSpeed = 600;
     float H_speed = 0;
@@ -885,6 +893,10 @@ int main(int argc, char *argv[])
     std::string health8Path = basePathStr + "photo/health8.png";
 
     std::string plant1Path = basePathStr + "photo/plant1.png";
+    std::string wandousheshou1Path = basePathStr + "photo/wandousheshou1.png";
+    std::string wandousheshou2Path = basePathStr + "photo/wandousheshou2.png";
+    std::string xiangrikui1Path = basePathStr + "photo/xiangrikui1.png";
+    std::string xiangrikui2Path = basePathStr + "photo/xiangrikui2.png";
     std::string wandouPath = basePathStr + "photo/wandou.png";
     std::string daifu_walkPath = basePathStr + "photo/daifu_walk.png";
     std::string tuichePath = basePathStr + "photo/tuiche.png";
@@ -898,6 +910,9 @@ int main(int argc, char *argv[])
     std::string daifuhealth6 = basePathStr + "photo/daifu6health.png";
     std::string daifuhealth7 = basePathStr + "photo/daifu7health.png";
     std::string daifuhealth8 = basePathStr + "photo/daifu8health.png";
+
+    std::string gameoverPath = basePathStr + "photo/gameover.png";
+    std::string gamefailPath = basePathStr + "photo/gamefail.png";
     //初始化随机数种子
     srand(static_cast<unsigned int>(time(NULL)));
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
@@ -924,17 +939,20 @@ int main(int argc, char *argv[])
         health6Path.c_str(),
         health7Path.c_str(),
         health8Path.c_str(),
-        200, 500, 100, 100);
+        1000, 680, 100, 100);
     //加载植物图片
-    Plant plant1(renderer, plant1Path.c_str(),
+    Plant wandousheshou1(renderer, wandousheshou1Path.c_str(),
         wandouPath.c_str(),
-        daifu_walkPath.c_str(),130, 400, 50, 50,50,0);
-    Plant plant2(renderer, plant1Path.c_str(),
+        wandousheshou2Path.c_str(),1300, 360, 100, 100,100,0);
+    Plant wandousheshou2(renderer, wandousheshou2Path.c_str(),
         wandouPath.c_str(),
-        daifu_walkPath.c_str(),400, 300, 50, 50,50,1);
+        wandousheshou1Path.c_str(),300, 680, 100, 100,100,0);
+    Plant xiangrikui(renderer, xiangrikui1Path.c_str(),
+        wandouPath.c_str(),
+        xiangrikui2Path.c_str(),100, 200, 100, 100,50,1);
     Plant daifu(renderer, daifuPath.c_str(),
         tuichePath.c_str(),
-        daifu_walkPath.c_str(),300, 0, 100, 100,80,2);
+        daifu_walkPath.c_str(),1000, 0, 100, 100,80,2);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -946,8 +964,9 @@ int main(int argc, char *argv[])
     //植物总和
     std::vector<Plant*> plants;
     //将植物加入到数组里面
-    plants.push_back(&plant1);
-    plants.push_back(&plant2);
+    plants.push_back(&wandousheshou1);
+    plants.push_back(&wandousheshou2);
+    plants.push_back(&xiangrikui);
     plants.push_back(&daifu);
     //血量的位置
     player.health_rect.x=0;
@@ -980,7 +999,14 @@ int main(int argc, char *argv[])
                     buttonClicked = true;
                     background2 = IMG_LoadTexture(renderer, game_back1Path.c_str());
                 }
+            }
+            else if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                {
 
+                    running = false;
+                }
             }
         }
         if (daifu.health_<=10 && daifu.health_>=0)
@@ -1015,26 +1041,49 @@ int main(int argc, char *argv[])
         {
             daifuxueliang=daifuhealth8;
         }
+        else if (daifu.health_<=0)
+        {
+            game_finished=true;
+        }
+        if (player.health <=0)
+        {
+            game_failed=true;
+        }
         xueliang daifuhealth(renderer, daifuxueliang.c_str());
         std::cerr<<daifu.health_<<std::endl;
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
         if (buttonClicked)
         {
-            player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
-            //更新植物无敌时间数据
-            for (auto& plant : plants)
+            if (game_finished)
             {
-                plant->WuDitimeing(nettime);
-                plant->update(nettime,player.F_rect,plants);
+                background2=IMG_LoadTexture(renderer, gameoverPath.c_str());
+                SDL_RenderCopy(renderer,background2,nullptr,nullptr);
+            }
+            else if (game_failed)
+            {
+                background2=IMG_LoadTexture(renderer, gamefailPath.c_str());
+                SDL_RenderCopy(renderer,background2,nullptr,nullptr);
+            }
+            else
+            {
+                player.movement(SDL_GetKeyboardState(nullptr),nettime,plants);
+                //更新植物无敌时间数据
+                for (auto& plant : plants)
+                {
+                    plant->WuDitimeing(nettime);
+                    plant->update(nettime,player.F_rect,plants);
+                }
+
+                SDL_RenderCopy(renderer, background2, nullptr, nullptr);
+                wandousheshou1.render(renderer,nettime);
+                wandousheshou2.render(renderer,nettime);
+                xiangrikui.render(renderer,nettime);
+                daifu.render(renderer,nettime);
+                player.render(renderer,nettime);
+                daifuhealth.render(renderer);
             }
 
-            SDL_RenderCopy(renderer, background2, nullptr, nullptr);
-            plant1.render(renderer,nettime);
-            plant2.render(renderer,nettime);
-            daifu.render(renderer,nettime);
-            player.render(renderer,nettime);
-            daifuhealth.render(renderer);
         }
         else
         {
