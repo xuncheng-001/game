@@ -23,6 +23,17 @@ private:
     SDL_FRect rect;
     SDL_FRect FireTexture;
 public:
+    //地面高度
+    float ground_height ;
+    float ground_height2;
+    float speed = 0.03;
+    float gravity = 800;
+    float jumpSpeed = 600;
+    float H_speed = 0;
+    bool jumping = false;
+    //daifu随机结果的持续时间
+    float random_time=0;
+    float random=0;
     //攻击冷却
     float fire_nettime=0;
     //是否已经攻击
@@ -127,7 +138,6 @@ public:
         {
             fire_range=200;
 
-
             if (Inrange(player_rect) && fire_nettime==0)
             {
                 if (left)
@@ -182,14 +192,47 @@ public:
             {
                 game_finished=true;
             }
-            int random=rand()%3;
+            if (random_time==0)
+            {
+                random=rand()%2;
+            }
+            random_time+=nettime;
+            if (random_time>1.0)
+            {
+                random_time=0;
+            }
             if (random==0)
             {
-                rect.x-=30*nettime;
+                rect.x-=100*nettime;
             }
             if (random==1)
             {
-                rect.x+=30*nettime;
+                rect.x+=100*nettime;
+            }
+            if (rect.x<0)
+            {
+                rect.x=0;
+            }
+            if (rect.x>1920)
+            {
+                rect.x=1920;
+            }
+            std::cerr<<random_time<<std::endl;
+            if (fire_nettime=0)
+            {
+                int fire_random=rand()%2;
+                if (fire_random==0)
+                {
+
+                }
+                FireTexture.w=20;
+                FireTexture.x=0;
+                FireTexture.y=2;
+                FireTexture.h=20;
+            }
+            if (is_firing)
+            {
+                FireTexture.x+=100*nettime;
             }
         }
 
@@ -238,8 +281,20 @@ class Player {
     SDL_Texture *walktexture;
     SDL_Texture *walktexture_right;
     SDL_Texture *zhuahentexture;
+    SDL_Texture *pin_atexture;
+    SDL_Texture *healthtexture1;
+    SDL_Texture *healthtexture2;
+    SDL_Texture *healthtexture3;
+    SDL_Texture *healthtexture4;
+    SDL_Texture *healthtexture5;
+    SDL_Texture *healthtexture6;
+    SDL_Texture *healthtexture7;
+    SDL_Texture *healthtexture8;
     SDL_FRect rect;
     public:
+    //闪烁的时间
+    float lighting_time=0;
+    bool is_lighting=false;
     //地面选择(false为下地面)
     bool ground_chosen=false;
     //地面高度
@@ -253,11 +308,13 @@ class Player {
     //走路
     bool onfoot=false;
     //血量和无敌状态,剩余的无敌时间
-    int health=100;
+    int health=80;
     bool wudi=false;
     float wuditime=0;
     //攻击范围
     SDL_FRect F_rect;
+    //生命值
+    SDL_FRect health_rect;
     //满足跳跃的参数
     float speed = 0.03;
     float gravity = 800;
@@ -269,6 +326,15 @@ class Player {
         const char* walkimagePath,
         const char* walkimagePath_right,
         const char* zhuahenimagePath,
+        const char* pin_aimagePath,
+        const char* healthimagePath1,
+        const char* healthimagePath2,
+        const char* healthimagePath3,
+        const char* healthimagePath4,
+        const char* healthimagePath5,
+        const char* healthimagePath6,
+        const char* healthimagePath7,
+        const char* healthimagePath8,
         int x, int y, int w, int h)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
@@ -276,6 +342,15 @@ class Player {
         walktexture = IMG_LoadTexture(renderer, walkimagePath);
         walktexture_right = IMG_LoadTexture(renderer, walkimagePath_right);
         zhuahentexture = IMG_LoadTexture(renderer, zhuahenimagePath);
+        pin_atexture= IMG_LoadTexture(renderer, pin_aimagePath);
+        healthtexture1 = IMG_LoadTexture(renderer, healthimagePath1);
+        healthtexture2 = IMG_LoadTexture(renderer, healthimagePath2);
+        healthtexture3 = IMG_LoadTexture(renderer, healthimagePath3);
+        healthtexture4 = IMG_LoadTexture(renderer, healthimagePath4);
+        healthtexture5 = IMG_LoadTexture(renderer, healthimagePath5);
+        healthtexture6 = IMG_LoadTexture(renderer, healthimagePath6);
+        healthtexture7 = IMG_LoadTexture(renderer, healthimagePath7);
+        healthtexture8 = IMG_LoadTexture(renderer, healthimagePath8);
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
         rect.w = static_cast<float>(w);
@@ -291,10 +366,21 @@ class Player {
         float oldx = rect.x;
         float oldy = rect.y;
         //平a的伤害范围
-        F_rect.x= rect.x + rect.w;
-        F_rect.y= rect.y ;
-        F_rect.w= 10;
-        F_rect.h= rect.h;
+        if (face)
+        {
+            F_rect.x= rect.x + rect.w;
+            F_rect.y= rect.y ;
+            F_rect.w= 10;
+            F_rect.h= rect.h;
+        }
+        else
+        {
+            F_rect.x= rect.x - 10;
+            F_rect.y= rect.y ;
+            F_rect.w= 10;
+            F_rect.h= rect.h;
+        }
+        //状态判断
         if (!keyboardState[SDL_SCANCODE_J])
         {
             pin_a = false;
@@ -450,65 +536,109 @@ class Player {
                 H_speed = 0;
             }
         }
+        //边框限制
+        if (rect.x<0)
+        {
+            rect.x=0;
+        }
+        if (rect.x>1920)
+        {
+            rect.x=1920;
+        }
 
     }
     void render(SDL_Renderer *renderer,float nettime)
     {
-        if (onfoot)
+        if (wudi)
         {
-            if (face)
+            lighting_time += nettime;
+            // 每 0.1 秒切换一次闪烁状态
+            is_lighting = static_cast<int>(lighting_time * 10) % 2 == 1;
+            if (lighting_time >= 0.2)
             {
-                if (time <= 0.2)
-                {
-                    SDL_RenderCopyF(renderer,texture_right,nullptr,&rect);
-                    time += nettime;
-                }
-                if (time < 0.4 && time >= 0.2)
-                {
-                    SDL_RenderCopyF(renderer, walktexture_right, nullptr, &rect);
-                    time += nettime;
-                }
-                if (time >=0.4)
-                {
-                    time = 0;
-                }
+                lighting_time = 0;
             }
-            else
-            {
-                if (time <= 0.2)
-                {
-                    SDL_RenderCopyF(renderer,texture,nullptr,&rect);
-                    time += nettime;
-                }
-                if (time < 0.4 && time >= 0.2)
-                {
-                    SDL_RenderCopyF(renderer, walktexture, nullptr, &rect);
-                    time += nettime;
-                }
-                if (time >=0.4)
-                {
-                    time = 0;
-                }
-            }
-
         }
         else
         {
-            if (face)
+            is_lighting = false;
+        }
+        if (!is_lighting)
+        {
+            SDL_Texture* currentTexture = nullptr;
+            if (onfoot)
             {
-                SDL_RenderCopyF(renderer, texture_right, nullptr, &rect);
+                if (face)
+                {
+                    if (time <= 0.2)
+                    {
+                        currentTexture = texture_right;
+                    }
+                    else
+                    {
+                        currentTexture = walktexture_right;
+                    }
+                }
+                else
+                {
+                    if (time <= 0.2)
+                    {
+                        currentTexture = texture;
+                    }
+                    else
+                    {
+                        currentTexture = walktexture;
+                    }
+                }
+                time += nettime;
+                if (time >= 0.4)
+                {
+                    time = 0;
+                }
             }
             else
             {
-                SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+                currentTexture = face ? texture_right : texture;
             }
 
-        }
-        if (pin_a)
-        {
-            SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &F_rect);
-        }
+            if (currentTexture)
+            {
+                SDL_RenderCopyF(renderer, currentTexture, nullptr, &rect);
+            }
 
+            if (pin_a)
+            {
+                SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &F_rect);
+                SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &rect);
+            }
+        }
+        switch (health)
+        {
+            case 10:
+                SDL_RenderCopyF(renderer, healthtexture1, nullptr, &health_rect);
+                break;
+            case 20:
+                SDL_RenderCopyF(renderer, healthtexture2, nullptr, &health_rect);
+                break;
+            case 30:
+                SDL_RenderCopyF(renderer, healthtexture3, nullptr, &health_rect);
+                break;
+            case 40:
+                SDL_RenderCopyF(renderer, healthtexture4, nullptr, &health_rect);
+                break;
+            case 50:
+                SDL_RenderCopyF(renderer, healthtexture5, nullptr, &health_rect);
+                break;
+            case 60:
+                SDL_RenderCopyF(renderer, healthtexture6, nullptr, &health_rect);
+                break;
+            case 70:
+                SDL_RenderCopyF(renderer, healthtexture7, nullptr, &health_rect);
+                break;
+            case 80:
+                SDL_RenderCopyF(renderer, healthtexture8, nullptr, &health_rect);
+                break;
+        }
 
     }
 
@@ -535,6 +665,15 @@ int main(int argc, char *argv[])
         "/home/xuncheng/game/c++game/photo/walk2.png",
         "/home/xuncheng/game/c++game/photo/walk2_right.png",
         "/home/xuncheng/game/c++game/photo/zhuahen.png" ,
+        "/home/xuncheng/game/c++game/photo/gongji_left.png",
+        "/home/xuncheng/game/c++game/photo/health1.png",
+        "/home/xuncheng/game/c++game/photo/health2.png",
+        "/home/xuncheng/game/c++game/photo/health3.png",
+        "/home/xuncheng/game/c++game/photo/health4.png",
+        "/home/xuncheng/game/c++game/photo/health5.png",
+        "/home/xuncheng/game/c++game/photo/health6.png",
+        "/home/xuncheng/game/c++game/photo/health7.png",
+        "/home/xuncheng/game/c++game/photo/health8.png",
         200, 500, 100, 100);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
@@ -557,6 +696,12 @@ int main(int argc, char *argv[])
     plants.push_back(&plant1);
     plants.push_back(&plant2);
     plants.push_back(&daifu);
+    //血量的位置
+    player.health_rect.x=0;
+    player.health_rect.y=50;
+    player.health_rect.w=400;
+    player.health_rect.h=50;
+
     while (running)
     {
 
