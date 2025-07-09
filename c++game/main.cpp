@@ -833,6 +833,13 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     //创建游戏窗口
     IMG_Init(IMG_INIT_PNG);
+    //不知道为什么用相对路径无法显示图片，查到可以使用这个函数来解决
+    char* basePath = SDL_GetBasePath();
+    std::string basePathStr = basePath;
+    SDL_free(basePath);
+    std::cerr << basePathStr << std::endl;
+    std::string buttonPath = basePathStr + "photo/button1.png";
+
     //初始化随机数种子
     srand(static_cast<unsigned int>(time(NULL)));
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
@@ -843,7 +850,7 @@ int main(int argc, char *argv[])
     //新的背景图片
     SDL_Texture* background2 = nullptr;
     //加载按钮图片
-    Button button(renderer, "/home/xuncheng/game/c++game/photo/button1.png", 220, 200, 200, 80);
+    Button button(renderer, buttonPath.c_str(), 220, 200, 200, 80);
     //加载玩家图片
     Player player(renderer, "/home/xuncheng/game/c++game/photo/player2.png",
         "/home/xuncheng/game/c++game/photo/player2_right2.png",
@@ -862,7 +869,7 @@ int main(int argc, char *argv[])
         200, 500, 100, 100);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",
+        "/home/xuncheng/game/c++game/photo/wandou.png",
         "/home/xuncheng/game/c++game/photo/daifu_walk.png",130, 400, 50, 50,50,0);
     Plant plant2(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
         "/home/xuncheng/game/c++game/photo/back2.png",
