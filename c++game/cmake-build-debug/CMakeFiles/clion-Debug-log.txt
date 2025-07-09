@@ -1,4 +1,12 @@
 /home/xuncheng/clion-2024.3.1.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -S /home/xuncheng/game/c++game -B /home/xuncheng/game/c++game/cmake-build-debug
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 3.5 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
 -- dynamic libasound -> libasound.so.2
 -- Checking for module 'jack'
 --   No package 'jack' found
@@ -173,6 +181,6 @@
 -- CFLAGS and LDFLAGS environment variables correctly.
 -- 
 -- Configuring SDL2_image 2.8.0
--- Configuring done (0.1s)
+-- Configuring done (0.2s)
 -- Generating done (0.1s)
 -- Build files have been written to: /home/xuncheng/game/c++game/cmake-build-debug
