@@ -347,7 +347,7 @@ public:
                 jumping=true;
             }
             //戴夫的小推车
-            if (tuiche_time>=20)
+            if (tuiche_time>=5)
             {
                 fire_random=rand()%2;
                 tuiche_time=0;
