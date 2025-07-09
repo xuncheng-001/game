@@ -267,11 +267,11 @@ public:
             }
             if (random==0)
             {
-                rect.x-=300*nettime;
+                rect.x-=200*nettime;
             }
             if (random==1)
             {
-                rect.x+=500*nettime;
+                rect.x+=200*nettime;
             }
             if (rect.x<0)
             {
@@ -875,7 +875,7 @@ int main(int argc, char *argv[])
     std::string basePathStr = basePath;
     SDL_free(basePath);
     std::string buttonPath = basePathStr + "photo/button1.png";
-    std::string back1Path = basePathStr + "photo/back1.png";
+    std::string back1Path = basePathStr + "photo/back2.png";
     std::string game_back1Path = basePathStr + "photo/game_back1.png";
     std::string player2Path = basePathStr + "photo/player2.png";
     std::string player2Path2 = basePathStr + "photo/player2_right2.png";
@@ -923,7 +923,7 @@ int main(int argc, char *argv[])
     //新的背景图片
     SDL_Texture* background2 = nullptr;
     //加载按钮图片
-    Button button(renderer, buttonPath.c_str(), 220, 200, 200, 80);
+    Button button(renderer, buttonPath.c_str(), 750, 390, 450, 250);
     //加载玩家图片
     Player player(renderer, player2Path.c_str(),
         player2Path2.c_str(),
