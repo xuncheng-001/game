@@ -19,10 +19,23 @@ class Plant
 {
 private:
     SDL_Texture *texture;
-    SDL_Texture *FireTexture_;
+    SDL_Texture *Firerect_;
+    SDL_Texture *diafu_walkTexture_;
     SDL_FRect rect;
-    SDL_FRect FireTexture;
+    SDL_FRect Firerect;
 public:
+    //戴夫的小推车
+    int fire_random;
+    float ground_tuiche;
+    float tuiche_h_speed;
+    float tuiche_time=0;
+    //戴夫走路的图像定时器
+    float daifu_walk = 0;
+    bool daifu_walking = false;
+    int jump_random=0;
+    //地面选择(false为下地面)
+    bool ground_chosen=false;
+    float jumping_randomtime=0;
     //地面高度
     float ground_height ;
     float ground_height2;
@@ -47,10 +60,13 @@ public:
     float wuditime=0;
     float fire_range;
     Plant(SDL_Renderer *renderer, const char* imagePath,
-        const char* fire_imagePath ,int x, int y, int w, int h,int health,int type)
+        const char* fire_imagePath ,
+        const char* daifu_walk_imagePath,
+        int x, int y, int w, int h,int health,int type)
     {
         texture = IMG_LoadTexture(renderer, imagePath);
-        FireTexture_ = IMG_LoadTexture(renderer, fire_imagePath);
+        Firerect_ = IMG_LoadTexture(renderer, fire_imagePath);
+        diafu_walkTexture_ = IMG_LoadTexture(renderer, daifu_walk_imagePath);
         health_ = health;
         type_ = type;
         rect.x = static_cast<float>(x);
@@ -64,19 +80,50 @@ public:
     }
     SDL_FRect getFireRect() const
     {
-        return FireTexture;
+        return Firerect;
     }
     ~Plant()
     {
         SDL_DestroyTexture(texture);
     }
-    void render(SDL_Renderer *renderer)
+    void render(SDL_Renderer *renderer,float nettime)
     {
-        SDL_RenderCopyF(renderer, texture, nullptr, &rect);
-        //攻击过程就渲染攻击特效
-        if (is_firing)
+
+        //daifu独有的移动特效
+        daifu_walk += nettime;
+        if (daifu_walk >= 0.15 &&daifu_walk <= 0.3)
         {
-            SDL_RenderCopyF(renderer, FireTexture_, nullptr, &FireTexture);
+            daifu_walking = true;
+        }
+        if (daifu_walk>=0 && daifu_walk<0.15)
+        {
+            daifu_walking = false;
+        }
+        if (daifu_walk>0.3)
+        {
+            daifu_walk=0;
+        }
+        if (type_ == 2)
+        {
+            if (daifu_walking)
+            {
+                SDL_RenderCopyF(renderer, diafu_walkTexture_, nullptr, &rect);
+            }
+            else
+            {
+                SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            }
+
+            SDL_RenderCopyF(renderer, Firerect_, nullptr, &Firerect);
+        }
+        else
+        {
+            SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+            //攻击过程就渲染攻击特效
+            if (is_firing)
+            {
+                SDL_RenderCopyF(renderer, Firerect_, nullptr, &Firerect);
+            }
         }
     }
     void takeDamage(int damage)
@@ -108,7 +155,7 @@ public:
         }
 
     }
-    //用于检测是否在攻击范围内,给豌豆射手攻击用的(戴夫躲避也可以使用)
+    //用于检测是否在攻击范围内,给豌豆射手攻击用的
     bool Inrange(const SDL_FRect player_rect)const
     {
         float x=player_rect.x+player_rect.w/2-(rect.x+rect.w/2);
@@ -116,6 +163,7 @@ public:
         float distance=std::sqrt(x*x+y*y);
         return distance < fire_range;
     }
+    //给向日葵回血用的
     void recover(Plant* plants,float recoverd_health)
     {
             plants->health_+=recoverd_health;
@@ -123,6 +171,7 @@ public:
     //不同的植物类型又有不同的特性
    void update(float nettime,const SDL_FRect player_rect,std::vector<Plant*> plants)
     {
+        tuiche_time +=nettime;
         bool left=player_rect.x+player_rect.w/2<rect.x+rect.w/2;
         if (fire_nettime>0)
         {
@@ -142,18 +191,18 @@ public:
             {
                 if (left)
                 {
-                    FireTexture.w=20;
-                    FireTexture.x=rect.x-FireTexture.w/2;
-                    FireTexture.y=rect.y;
-                    FireTexture.h=20;
+                    Firerect.w=20;
+                    Firerect.x=rect.x-Firerect.w/2;
+                    Firerect.y=rect.y;
+                    Firerect.h=20;
                     firing_facing=true;
                 }
                 else
                 {
-                    FireTexture.w=20;
-                    FireTexture.x=rect.x+FireTexture.w/2+rect.w;
-                    FireTexture.y=rect.y;
-                    FireTexture.h=20;
+                    Firerect.w=20;
+                    Firerect.x=rect.x+Firerect.w/2+rect.w;
+                    Firerect.y=rect.y;
+                    Firerect.h=20;
                     firing_facing=false;
                 }
                 is_firing=true;
@@ -163,11 +212,11 @@ public:
             {
                 if (firing_facing)
                 {
-                    FireTexture.x-=100*nettime;
+                    Firerect.x-=100*nettime;
                 }
                 else
                 {
-                    FireTexture.x+=100*nettime;
+                    Firerect.x+=100*nettime;
                 }
             }
         }
@@ -197,7 +246,7 @@ public:
                 random=rand()%2;
             }
             random_time+=nettime;
-            if (random_time>1.0)
+            if (random_time>2.5)
             {
                 random_time=0;
             }
@@ -213,26 +262,161 @@ public:
             {
                 rect.x=0;
             }
-            if (rect.x>1920)
+            if (rect.x>1870)
             {
-                rect.x=1920;
+                rect.x=1870;
             }
-            std::cerr<<random_time<<std::endl;
-            if (fire_nettime=0)
+            H_speed += nettime*gravity;
+            rect.y += H_speed * nettime;
+
+
+            //下层的地面高度
+            if (rect.x >=0 && rect.x<200)
             {
-                int fire_random=rand()%2;
+                ground_height= 820-0.7*rect.x;
+            }
+            if (rect.x>200 && rect.x<960)
+            {
+                ground_height= 680;
+            }
+            if (rect.x>=960 && rect.x<1160)
+            {
+                ground_height= 680+(rect.x-960)*0.8;
+            }
+            //上层的地面高度
+            if (rect.x>=0 && rect.x<=180)
+            {
+                ground_height2= 200;
+            }
+            if (rect.x>180 && rect.x<580)
+            {
+                ground_height2= 200+(rect.x-180)*0.8;
+            }
+            if (rect.x>=940 && rect.x<1140)
+            {
+                ground_height2= 520-(rect.x-940)*0.8;
+            }
+            if (rect.x>=1140 )
+            {
+                ground_height2= 360;
+            }
+
+            if (!ground_chosen)
+            {
+                if (rect.y >= ground_height)
+                {
+                    rect.y = ground_height;
+                    jumping = false;
+                    H_speed = 0;
+                }
+            }
+            else
+            {
+                if (rect.y >= ground_height2)
+                {
+                    rect.y = ground_height2;
+                    jumping = false;
+                    H_speed = 0;
+                }
+            }
+
+            jumping_randomtime+=nettime;
+            if (jumping_randomtime==0)
+            {
+                 jump_random=rand()%3;
+            }
+            if (jumping_randomtime>5)
+            {
+                jumping_randomtime=0;
+            }
+            if (jumping_randomtime>0)
+            {
+                jumping=true;
+            }
+            if (jump_random==1)
+            {
+                ground_chosen=false;
+            }
+            if (rect.y<ground_height2 && jump_random!=1)
+            {
+                ground_chosen=true;
+            }
+            if (jump_random==0 && !jumping)
+            {
+                H_speed-=jumpSpeed;
+                jumping=true;
+            }
+            //戴夫的小推车
+            if (tuiche_time>=20)
+            {
+                fire_random=rand()%2;
+                tuiche_time=0;
                 if (fire_random==0)
                 {
+                    tuiche_h_speed=0;
+
+                    Firerect.w=50;
+                    Firerect.x=0;
+                    Firerect.y=200;
+                    Firerect.h=50;
+
 
                 }
-                FireTexture.w=20;
-                FireTexture.x=0;
-                FireTexture.y=2;
-                FireTexture.h=20;
+                if (fire_random==1)
+                {
+                    tuiche_h_speed=0;
+
+                    Firerect.w=50;
+                    Firerect.x=0;
+                    Firerect.y=820;
+                    Firerect.h=50;
+
+
+                }
+
             }
-            if (is_firing)
+
+            if (fire_random==0)
             {
-                FireTexture.x+=100*nettime;
+                if (Firerect.x>=0 && Firerect.x<=180)
+                {
+                    ground_tuiche= 200+50;
+                }
+                if (Firerect.x>180 && Firerect.x<580)
+                {
+                    ground_tuiche= 200+(Firerect.x-180)*0.8+50;
+                }
+                if (Firerect.x>=940 && Firerect.x<1140)
+                {
+                    ground_tuiche= 520-(Firerect.x-940)*0.8+50;
+                }
+                if (Firerect.x>=1140 )
+                {
+                    ground_tuiche= 360+50;
+                }
+            }
+            if (fire_random==1)
+            {
+                if (Firerect.x >=0 && Firerect.x<200)
+                {
+                    ground_tuiche= 820-0.7*Firerect.x+50;
+                }
+                if (Firerect.x>200 && Firerect.x<960)
+                {
+                    ground_tuiche= 680+50;
+                }
+                if (Firerect.x>=960 && Firerect.x<1160)
+                {
+                    ground_tuiche= 680+(Firerect.x-960)*0.8+50;
+                }
+            }
+            tuiche_h_speed+=nettime*gravity;
+            Firerect.x+=400*nettime;
+            fire_nettime+=nettime;
+            Firerect.y+= tuiche_h_speed*nettime;
+            if (Firerect.y>ground_tuiche)
+            {
+                Firerect.y=ground_tuiche;
             }
         }
 
@@ -370,14 +554,14 @@ class Player {
         {
             F_rect.x= rect.x + rect.w;
             F_rect.y= rect.y ;
-            F_rect.w= 10;
+            F_rect.w= 60;
             F_rect.h= rect.h;
         }
         else
         {
-            F_rect.x= rect.x - 10;
+            F_rect.x= rect.x - 60;
             F_rect.y= rect.y ;
-            F_rect.w= 10;
+            F_rect.w= 60;
             F_rect.h= rect.h;
         }
         //状态判断
@@ -541,9 +725,9 @@ class Player {
         {
             rect.x=0;
         }
-        if (rect.x>1920)
+        if (rect.x>1870)
         {
-            rect.x=1920;
+            rect.x=1870;
         }
 
     }
@@ -609,7 +793,6 @@ class Player {
             if (pin_a)
             {
                 SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &F_rect);
-                SDL_RenderCopyF(renderer, zhuahentexture, nullptr, &rect);
             }
         }
         switch (health)
@@ -650,6 +833,8 @@ int main(int argc, char *argv[])
     SDL_Init(SDL_INIT_VIDEO);
     //创建游戏窗口
     IMG_Init(IMG_INIT_PNG);
+    //初始化随机数种子
+    srand(static_cast<unsigned int>(time(NULL)));
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
     //创建渲染器
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
@@ -677,11 +862,14 @@ int main(int argc, char *argv[])
         200, 500, 100, 100);
     //加载植物图片
     Plant plant1(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",1140, 400, 50, 50,50,0);
+        "/home/xuncheng/game/c++game/photo/back2.png",
+        "/home/xuncheng/game/c++game/photo/daifu_walk.png",130, 400, 50, 50,50,0);
     Plant plant2(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",400, 300, 50, 50,50,1);
-    Plant daifu(renderer, "/home/xuncheng/game/c++game/photo/plant1.png",
-        "/home/xuncheng/game/c++game/photo/back2.png",300, 680, 50, 50,50,2);
+        "/home/xuncheng/game/c++game/photo/back2.png",
+        "/home/xuncheng/game/c++game/photo/daifu_walk.png",400, 300, 50, 50,50,1);
+    Plant daifu(renderer, "/home/xuncheng/game/c++game/photo/daifu2.png",
+        "/home/xuncheng/game/c++game/photo/tuiche.png",
+        "/home/xuncheng/game/c++game/photo/daifu_walk.png",300, 0, 100, 100,50,2);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -743,9 +931,9 @@ int main(int argc, char *argv[])
             }
 
             SDL_RenderCopy(renderer, background2, nullptr, nullptr);
-            plant1.render(renderer);
-            plant2.render(renderer);
-            daifu.render(renderer);
+            plant1.render(renderer,nettime);
+            plant2.render(renderer,nettime);
+            daifu.render(renderer,nettime);
             player.render(renderer,nettime);
         }
         else
