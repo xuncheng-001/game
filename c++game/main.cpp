@@ -6,6 +6,7 @@
 #include <cmath>
 //全局变量，用于检测是否结束了游戏
 bool game_finished = false;
+std::string daifuxueliang;
 
 //碰撞检测
 bool checkCollision(SDL_FRect rect1, SDL_FRect rect2)
@@ -56,6 +57,7 @@ public:
 
     int type_;
     int health_;
+    int health_max;
     bool wudi=false;
     float wuditime=0;
     float fire_range;
@@ -68,6 +70,7 @@ public:
         Firerect_ = IMG_LoadTexture(renderer, fire_imagePath);
         diafu_walkTexture_ = IMG_LoadTexture(renderer, daifu_walk_imagePath);
         health_ = health;
+        health_max = health;
         type_ = type;
         rect.x = static_cast<float>(x);
         rect.y = static_cast<float>(y);
@@ -166,7 +169,11 @@ public:
     //给向日葵回血用的
     void recover(Plant* plants,float recoverd_health)
     {
-            plants->health_+=recoverd_health;
+        plants->health_+=recoverd_health;
+        if (plants->health_>=plants->health_max)
+        {
+            plants->health_=plants->health_max;
+        }
     }
     //不同的植物类型又有不同的特性
    void update(float nettime,const SDL_FRect player_rect,std::vector<Plant*> plants)
@@ -225,10 +232,10 @@ public:
         {
             if (health_>0 && fire_nettime==0)
             {
-                fire_nettime=2;
+                fire_nettime=3;
                 for (auto plant : plants)
                 {
-                    recover(plant,10);
+                    recover(plant,1);
                 }
             }
         }
@@ -457,7 +464,29 @@ class Button {
         return texture;
     }
 };
-
+class xueliang
+{
+    private:
+    SDL_Texture *texture;
+    SDL_FRect rect;
+    public:
+    xueliang(SDL_Renderer *renderer,const char* imagePath)
+    {
+        texture = IMG_LoadTexture(renderer, imagePath);
+        rect.x = 0;
+        rect.y = 100;
+        rect.w = 400;
+        rect.h = 50;
+    }
+    ~xueliang()
+    {
+        SDL_DestroyTexture(texture);
+    }
+    void render(SDL_Renderer *renderer)
+    {
+        SDL_RenderCopyF(renderer, texture, nullptr, &rect);
+    }
+};
 class Player {
     private:
     SDL_Texture *texture;
@@ -500,7 +529,7 @@ class Player {
     //生命值
     SDL_FRect health_rect;
     //满足跳跃的参数
-    float speed = 0.03;
+    float speed = 0.1;
     float gravity = 800;
     float jumpSpeed = 600;
     float H_speed = 0;
@@ -860,6 +889,15 @@ int main(int argc, char *argv[])
     std::string daifu_walkPath = basePathStr + "photo/daifu_walk.png";
     std::string tuichePath = basePathStr + "photo/tuiche.png";
     std::string daifuPath = basePathStr + "photo/daifu2.png";
+
+    std::string daifuhealth1 = basePathStr + "photo/daifu1health.png";
+    std::string daifuhealth2 = basePathStr + "photo/daifu2health.png";
+    std::string daifuhealth3 = basePathStr + "photo/daifu3health.png";
+    std::string daifuhealth4 = basePathStr + "photo/daifu4health.png";
+    std::string daifuhealth5 = basePathStr + "photo/daifu5health.png";
+    std::string daifuhealth6 = basePathStr + "photo/daifu6health.png";
+    std::string daifuhealth7 = basePathStr + "photo/daifu7health.png";
+    std::string daifuhealth8 = basePathStr + "photo/daifu8health.png";
     //初始化随机数种子
     srand(static_cast<unsigned int>(time(NULL)));
     SDL_Window *window = SDL_CreateWindow("僵尸大战植物",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,1920,1080,0);
@@ -896,7 +934,7 @@ int main(int argc, char *argv[])
         daifu_walkPath.c_str(),400, 300, 50, 50,50,1);
     Plant daifu(renderer, daifuPath.c_str(),
         tuichePath.c_str(),
-        daifu_walkPath.c_str(),300, 0, 100, 100,50,2);
+        daifu_walkPath.c_str(),300, 0, 100, 100,80,2);
     //用于判断是否点击按钮
     bool buttonClicked = false;
 
@@ -916,6 +954,7 @@ int main(int argc, char *argv[])
     player.health_rect.y=50;
     player.health_rect.w=400;
     player.health_rect.h=50;
+
 
     while (running)
     {
@@ -944,7 +983,40 @@ int main(int argc, char *argv[])
 
             }
         }
-
+        if (daifu.health_<=10 && daifu.health_>=0)
+        {
+            daifuxueliang=daifuhealth1;
+        }
+        else if (daifu.health_<=20 && daifu.health_>=10)
+        {
+            daifuxueliang=daifuhealth2;
+        }
+        else if (daifu.health_<=30 && daifu.health_>=20)
+        {
+            daifuxueliang=daifuhealth3;
+        }
+        else if (daifu.health_<=40 && daifu.health_>=30)
+        {
+            daifuxueliang=daifuhealth4;
+        }
+        else if (daifu.health_<=50 && daifu.health_>=40)
+        {
+            daifuxueliang=daifuhealth5;
+        }
+        else if (daifu.health_<=60 && daifu.health_>=50)
+        {
+            daifuxueliang=daifuhealth6;
+        }
+        else if (daifu.health_<=70 && daifu.health_>=60)
+        {
+            daifuxueliang=daifuhealth7;
+        }
+        else if (daifu.health_<=80 && daifu.health_>=70)
+        {
+            daifuxueliang=daifuhealth8;
+        }
+        xueliang daifuhealth(renderer, daifuxueliang.c_str());
+        std::cerr<<daifu.health_<<std::endl;
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
         if (buttonClicked)
@@ -962,6 +1034,7 @@ int main(int argc, char *argv[])
             plant2.render(renderer,nettime);
             daifu.render(renderer,nettime);
             player.render(renderer,nettime);
+            daifuhealth.render(renderer);
         }
         else
         {
